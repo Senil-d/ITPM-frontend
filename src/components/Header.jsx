@@ -28,7 +28,7 @@ export default function Header() {
          <Link to='/display-tours'>
            <li className='hidden sm:inline text-white font-semibold hover:underline'>Tour Packages</li>
          </Link>
-         <Link to='/list-your-trip'>
+         <Link to='/supplier-signin'>
            <li className='hidden sm:inline text-white font-semibold hover:underline'>List Your Trip</li>
          </Link>
          <Link to='/sign-in'>
