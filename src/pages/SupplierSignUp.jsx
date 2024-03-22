@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {Link, useNavigate} from 'react-router-dom';
 
 
-export default function signUp() {
+export default function SupplierSignUp() {
 
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
@@ -74,7 +74,7 @@ export default function signUp() {
           <span className='text-blue-700 hover:underline'>Sign in</span>
         </Link>
       </div>
-      
+      {error && <p className='text-red-500 mt-5'>{error}</p>}
     </div>
   )
 }
