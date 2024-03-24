@@ -1,12 +1,18 @@
 import React, { useState } from 'react'
 import {Link, useNavigate} from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from '../redux/supplier/supplierSlice.js';
 
 
 export default function SupplierSignIn() {
 
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.supplier);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   //........................................
@@ -23,7 +29,7 @@ export default function SupplierSignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signInStart());
       const res = await fetch('/api/sauth/signin', 
         {
           method: 'POST',
@@ -36,18 +42,15 @@ export default function SupplierSignIn() {
       const data = await res.json();
       console.log(data);
       if(data.success == false){
-        setError(data.message);
-        setLoading(false);
+        dispatch(signInFailure(data.message));
         return;
       }
 
-      setLoading(false);
-      setError(null);
+      dispatch(signInSuccess(data));
       navigate('/list-your-trip');
 
     } catch (error) {
-      setLoading(false);
-      setError(error.message);
+      dispatch(signInFailure(error.message));
     }
   };
 
@@ -56,11 +59,26 @@ export default function SupplierSignIn() {
       <h1 className='text-3xl text-center font-semibold my-7'>Sign In</h1>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
 
-        <input type='text' placeholder='Email' className='border p-3 rounded-lg' id='email' onChange={handleChange}/>
+        <input 
+          type='email' 
+          placeholder='Email' 
+          className='border p-3 rounded-lg' 
+          id='email' 
+          onChange={handleChange}
+        />
 
-        <input type='text' placeholder='Password' className='border p-3 rounded-lg' id='password' onChange={handleChange}/>
+        <input 
+          type='password' 
+          placeholder='Password' 
+          className='border p-3 rounded-lg' 
+          id='password' 
+          onChange={handleChange}
+        />
 
-        <button disabled={loading} className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>
+        <button 
+          disabled={loading} 
+          className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'
+        >
           {loading ? 'Loading...': 'Sign In'}
         </button>
 
