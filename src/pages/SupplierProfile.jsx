@@ -3,7 +3,8 @@ import { useEffect, useRef, useState} from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
 import { app } from '../firebase.jsx';
 import { useDispatch } from 'react-redux';
-import {updateSupplierStart, updateSupplierSuccess, updateSupplierFailure, deleteSupplierStart, deleteSupplierSuccess, deleteSupplierFailure} from '../redux/supplier/supplierSlice.js';
+import {updateSupplierStart, updateSupplierSuccess, updateSupplierFailure, deleteSupplierStart, deleteSupplierSuccess, deleteSupplierFailure, signOutStart,
+  signOutSuccess,signOutFailure} from '../redux/supplier/supplierSlice.js';
 import AlertDialog from '../components/AlertDialog.jsx';
 
 
@@ -107,6 +108,22 @@ const handleDeleteSupplier = async () => {
   }
 };
 
+//............................................
+const handleSignOut = async () => {
+  try {
+    dispatch(signOutStart());
+    const res = await fetch('/api/sauth/signout');
+    const data = await res.json();
+    if (data.success === false) {
+      dispatch(signOutFailure(data.message));
+      return;
+    }
+    dispatch(signOutSuccess(data));
+  } catch (error) {
+    dispatch(signOutFailure(data.message));
+  }
+};
+
 //....................................................
   return (
     <div className='p-3 max-w-lg mx-auto'>
@@ -189,7 +206,7 @@ const handleDeleteSupplier = async () => {
         content="Are you sure you want to delete this supplier account?"
       />
 
-      <span className='text-red-700 cursor-pointer'>
+      <span onClick={handleSignOut} className='text-red-700 cursor-pointer'>
         Sign out
       </span>
     </div>

@@ -46,6 +46,18 @@ const supplierSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    signOutStart: (state) => {
+      state.loading = true;
+    },
+    signOutSuccess: (state, action) => {
+      state.currentSupplier = null;
+      state.loading = false;
+      state.error = null;
+    },
+    signOutFailure: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
 
    
   },
@@ -61,6 +73,9 @@ export const {
   deleteSupplierStart,
   deleteSupplierSuccess,
   deleteSupplierFailure,
+  signOutStart,
+  signOutSuccess,
+  signOutFailure
 } = supplierSlice.actions;
 
 export default supplierSlice.reducer;
