@@ -3,7 +3,8 @@ import { useEffect, useRef, useState} from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
 import { app } from '../firebase.jsx';
 import { useDispatch } from 'react-redux';
-import {updateSupplierStart, updateSupplierSuccess, updateSupplierFailure} from '../redux/supplier/supplierSlice.js';
+import {updateSupplierStart, updateSupplierSuccess, updateSupplierFailure, deleteSupplierStart, deleteSupplierSuccess, deleteSupplierFailure} from '../redux/supplier/supplierSlice.js';
+import AlertDialog from '../components/AlertDialog.jsx';
 
 
 export default function SupplierProfile() {
@@ -15,6 +16,7 @@ export default function SupplierProfile() {
   const [formData, setFormData] = useState({});
   const [filePerc, setFilePerc] = useState(0);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   //.............................
   useEffect(() => {
@@ -75,6 +77,35 @@ export default function SupplierProfile() {
       dispatch(updateSupplierFailure(error.message));
     }
   };
+
+//.................................................
+const handleOpenDialog = async () => {
+  setDialogOpen(true);
+};
+
+const handleCloseDialog = () => {
+  setDialogOpen(false);
+};
+
+const handleDeleteSupplier = async () => {
+    try {
+      dispatch(deleteSupplierStart());
+      const res = await fetch(`/api/supplier/delete/${currentSupplier._id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteSupplierFailure(data.message));
+        return;
+      }
+      else{
+        dispatch(deleteSupplierSuccess(data));
+      }
+    }catch (error) {
+      dispatch(deleteSupplierFailure(error.message));
+    
+  }
+};
 
 //....................................................
   return (
@@ -143,11 +174,21 @@ export default function SupplierProfile() {
     </form>
 
     <div className='flex justify-between mt-5'>
+
       <span
+        onClick={handleOpenDialog}
         className='text-red-700 cursor-pointer'
       >
         Delete account
       </span>
+      <AlertDialog
+        open={dialogOpen}
+        handleClose={handleCloseDialog}
+        handleConfirm={handleDeleteSupplier}
+        title="Confirm Delete"
+        content="Are you sure you want to delete this supplier account?"
+      />
+
       <span className='text-red-700 cursor-pointer'>
         Sign out
       </span>

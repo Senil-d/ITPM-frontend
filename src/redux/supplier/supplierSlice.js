@@ -34,6 +34,18 @@ const supplierSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    deleteSupplierStart: (state) => {
+      state.loading = true;
+    },
+    deleteSupplierSuccess: (state, action) => {
+      state.currentSupplier = null;
+      state.loading = false;
+      state.error = null;
+    },
+    deleteSupplierFailure: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
 
    
   },
@@ -45,7 +57,10 @@ export const {
   signInFailure,
   updateSupplierStart,
   updateSupplierSuccess,
-  updateSupplierFailure
+  updateSupplierFailure,
+  deleteSupplierStart,
+  deleteSupplierSuccess,
+  deleteSupplierFailure,
 } = supplierSlice.actions;
 
 export default supplierSlice.reducer;
